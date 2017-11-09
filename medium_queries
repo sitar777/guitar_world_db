@@ -1,0 +1,25 @@
+--show the brightest representatives (from table "genres") of genres, take the name
+--of the bands from table "bands"
+
+SELECT b.band_name, g.genre_name
+FROM bands AS b
+RIGHT JOIN genres AS g ON b.id = g.brightest_band_id
+ORDER BY b.band_name;
+
+--show the country for the first 10 guitarists (by alphabet) instead of the id of a
+--country take the name of the country from table "countries"
+
+SELECT g.first_name, g.last_name, c.country_name
+FROM countries c
+LEFT JOIN guitar_players g ON c.id = g.country_id
+ORDER BY g.first_name, g.last_name
+LIMIT 10;
+
+--show the sound recording label name for all the guitarists from the USA, ordering by 
+--alphabet take the name of the label from table "labels"
+
+SELECT g.first_name, g.last_name, l.label_name
+FROM labels l
+INNER JOIN guitar_players g ON l.id = g.label_id 
+WHERE g.country_id = 266
+ORDER BY g.first_name, g.last_name;
