@@ -1,0 +1,27 @@
+--select all guitarists from the USA
+
+SELECT g.first_name, g.last_name
+FROM guitar_players g
+WHERE g.country_id = 266;
+
+--select all guitarists who are alive now, order by birth date
+
+SELECT g.first_name, g.last_name, g.birth_date
+FROM guitar_players g
+WHERE death_date IS NULL
+ORDER BY g.birth_date;
+
+--show the bands (not solo musicians) which are playing now and it's hometowns 
+
+SELECT b.band_name, b.hometown
+FROM bands b 
+WHERE b.is_playing = TRUE AND b.one_man_band = FALSE
+ORDER BY b.hometown;
+
+--show the first 15 cities (by alphabet) which are mentioned in table "bands"
+
+SELECT DISTINCT b.hometown
+FROM bands b
+WHERE b.hometown IS NOT NULL
+ORDER BY b.hometown
+LIMIT 15;
