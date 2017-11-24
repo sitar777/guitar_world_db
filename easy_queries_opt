@@ -1,0 +1,221 @@
+Easy queries:
+
+1) Using indexes in the 1st query is not effective. The cost of Index scan is higher than the cost of Seq scan.
+
+EXPLAIN(ANALYZE) SELECT g.first_name, g.last_name
+FROM guitar_players g
+WHERE g.country_id = 266;
+
+                                                  QUERY PLAN                                                 
+------------------------------------------------------------------------------------------------------------
+ Seq Scan on guitar_players g  (cost=0.00..1.19 rows=1 width=64) (actual time=0.041..0.045 rows=10 loops=1)
+ Filter: (country_id = 266)
+ Rows Removed by Filter: 5
+ Planning time: 0.827 ms
+ Execution time: 0.106 ms
+
+
+CREATE INDEX country_id_idx 
+ON public.guitar_players (country_id)
+
+EXPLAIN(ANALYZE) SELECT g.first_name, g.last_name
+FROM guitar_players g
+WHERE g.country_id = 266;
+
+                                                 QUERY PLAN                                                 
+------------------------------------------------------------------------------------------------------------
+ Seq Scan on guitar_players g  (cost=0.00..1.19 rows=1 width=64) (actual time=0.055..0.062 rows=10 loops=1)
+ Filter: (country_id = 266)
+ Rows Removed by Filter: 5
+ Planning time: 1.247 ms
+ Execution time: 0.478 ms
+
+SET enable_seqscan TO off;
+
+EXPLAIN(ANALYZE) SELECT g.first_name, g.last_name
+FROM guitar_players g
+WHERE g.country_id = 266;
+
+                                                            QUERY PLAN                                                             
+-----------------------------------------------------------------------------------------------------------------------------------
+ Index Scan using country_id_idx on guitar_players g  (cost=0.14..8.15 rows=1 width=64) (actual time=0.095..0.104 rows=10 loops=1)
+ Index Cond: (country_id = 266)
+ Planning time: 0.122 ms
+ Execution time: 0.149 ms
+
+
+2) Using indexes in the 2nd query is not effective. The cost of Index scan is higher than the cost of Seq scan and the execution time is higher.
+
+
+EXPLAIN(ANALYZE) SELECT g.first_name, g.last_name, g.birth_date
+FROM guitar_players g
+WHERE death_date IS NULL
+ORDER BY g.birth_date;
+
+                                                    QUERY PLAN                                                    
+------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=1.16..1.16 rows=1 width=68) (actual time=0.218..0.221 rows=10 loops=1)
+   Sort Key: birth_date
+   Sort Method: quicksort  Memory: 25kB
+   ->  Seq Scan on guitar_players g  (cost=0.00..1.15 rows=1 width=68) (actual time=0.053..0.056 rows=10 loops=1)
+         Filter: (death_date IS NULL)
+         Rows Removed by Filter: 5
+ Planning time: 0.676 ms
+ Execution time: 0.260 ms
+
+CREATE INDEX death_date_idx 
+ON guitar_players (death_date NULLS FIRST);
+
+EXPLAIN(ANALYZE) SELECT g.first_name, g.last_name, g.birth_date
+FROM guitar_players g
+WHERE death_date IS NULL
+ORDER BY g.birth_date;
+
+                                                    QUERY PLAN                                                    
+------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=1.16..1.16 rows=1 width=68) (actual time=0.068..0.069 rows=10 loops=1)
+   Sort Key: birth_date
+   Sort Method: quicksort  Memory: 25kB
+   ->  Seq Scan on guitar_players g  (cost=0.00..1.15 rows=1 width=68) (actual time=0.023..0.026 rows=10 loops=1)
+         Filter: (death_date IS NULL)
+         Rows Removed by Filter: 5
+ Planning time: 19.393 ms
+ Execution time: 0.104 ms
+
+
+SET enable_seqscan TO off;
+
+EXPLAIN(ANALYZE) SELECT g.first_name, g.last_name, g.birth_date
+FROM guitar_players g
+WHERE death_date IS NULL
+ORDER BY g.birth_date;
+
+                                                                QUERY PLAN                                                                 
+-------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=8.16..8.17 rows=1 width=68) (actual time=19.714..19.716 rows=10 loops=1)
+   Sort Key: birth_date
+   Sort Method: quicksort  Memory: 25kB
+   ->  Index Scan using death_date_idx on guitar_players g  (cost=0.14..8.15 rows=1 width=68) (actual time=19.682..19.692 rows=10 loops=1)
+         Index Cond: (death_date IS NULL)
+ Planning time: 0.118 ms
+ Execution time: 19.746 ms
+
+
+3) After forcing not using Sec scan the cost of the operation is higher, but the execution time is lower.
+
+EXPLAIN(ANALIZE) SELECT b.band_name, b.hometown
+FROM bands b 
+WHERE b.is_playing = TRUE AND b.one_man_band = FALSE
+ORDER BY b.hometown;
+
+                                               QUERY PLAN                                                
+---------------------------------------------------------------------------------------------------------
+ Sort  (cost=1.43..1.45 rows=8 width=64) (actual time=0.223..0.226 rows=10 loops=1)
+   Sort Key: hometown
+   Sort Method: quicksort  Memory: 25kB
+   ->  Seq Scan on bands b  (cost=0.00..1.31 rows=8 width=64) (actual time=0.037..0.042 rows=10 loops=1)
+         Filter: (is_playing AND (NOT one_man_band))
+         Rows Removed by Filter: 21
+ Planning time: 0.562 ms
+ Execution time: 0.247 ms
+
+CREATE INDEX is_playing_idx 
+ON bands (is_playing) WHERE is_playing;
+
+CREATE INDEX one_man_band_idx 
+ON bands (one_man_band) WHERE NOT one_man_band;
+
+EXPLAIN(ANALYZE) SELECT b.band_name, b.hometown
+FROM bands b 
+WHERE b.is_playing = TRUE AND b.one_man_band = FALSE
+ORDER BY b.hometown;
+
+                                               QUERY PLAN                                                
+---------------------------------------------------------------------------------------------------------
+ Sort  (cost=1.43..1.45 rows=8 width=64) (actual time=0.144..0.146 rows=10 loops=1)
+   Sort Key: hometown
+   Sort Method: quicksort  Memory: 25kB
+   ->  Seq Scan on bands b  (cost=0.00..1.31 rows=8 width=64) (actual time=0.015..0.021 rows=10 loops=1)
+         Filter: (is_playing AND (NOT one_man_band))
+         Rows Removed by Filter: 21
+ Planning time: 0.166 ms
+ Execution time: 0.182 ms
+
+SET enable_seqscan TO off;
+
+EXPLAIN(ANALYZE) SELECT b.band_name, b.hometown
+FROM bands b 
+WHERE b.is_playing = TRUE AND b.one_man_band = FALSE
+ORDER BY b.hometown;
+
+
+                                                        QUERY PLAN                                                        
+--------------------------------------------------------------------------------------------------------------------------
+ Index Scan using hometown_indx on bands b  (cost=0.14..12.60 rows=8 width=64) (actual time=0.013..0.025 rows=10 loops=1)
+ Filter: (is_playing AND (NOT one_man_band))
+ Rows Removed by Filter: 21
+ Planning time: 0.788 ms
+ Execution time: 0.066 ms
+
+
+4) Using indexes in the 4th query is not effective. The cost of Index scan is higher than the cost of Seq scan and the execution time is higher.
+
+EXPLAIN(ANALYZE) SELECT DISTINCT b.hometown
+FROM bands b
+WHERE b.hometown IS NOT NULL
+ORDER BY b.hometown
+LIMIT 15;
+
+                                                      QUERY PLAN                                                      
+----------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=2.08..2.15 rows=15 width=32) (actual time=0.278..0.293 rows=15 loops=1)
+   ->  Unique  (cost=2.08..2.23 rows=31 width=32) (actual time=0.277..0.290 rows=15 loops=1)
+         ->  Sort  (cost=2.08..2.16 rows=31 width=32) (actual time=0.276..0.280 rows=26 loops=1)
+               Sort Key: hometown
+               Sort Method: quicksort  Memory: 26kB
+               ->  Seq Scan on bands b  (cost=0.00..1.31 rows=31 width=32) (actual time=0.017..0.027 rows=30 loops=1)
+                     Filter: (hometown IS NOT NULL)
+                     Rows Removed by Filter: 1
+ Planning time: 0.200 ms
+ Execution time: 0.336 ms
+
+CREATE INDEX hometown_indx 
+ON public.bands (hometown NULLS LAST);
+
+EXPLAIN(ANALYZE) SELECT DISTINCT b.hometown
+FROM bands b
+WHERE b.hometown IS NOT NULL
+ORDER BY b.hometown
+LIMIT 15;
+
+                                                      QUERY PLAN                                                      
+----------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=2.08..2.15 rows=15 width=32) (actual time=0.291..0.306 rows=15 loops=1)
+   ->  Unique  (cost=2.08..2.23 rows=31 width=32) (actual time=0.289..0.302 rows=15 loops=1)
+         ->  Sort  (cost=2.08..2.16 rows=31 width=32) (actual time=0.289..0.291 rows=26 loops=1)
+               Sort Key: hometown
+               Sort Method: quicksort  Memory: 26kB
+               ->  Seq Scan on bands b  (cost=0.00..1.31 rows=31 width=32) (actual time=0.019..0.030 rows=30 loops=1)
+                     Filter: (hometown IS NOT NULL)
+                     Rows Removed by Filter: 1
+ Planning time: 0.579 ms
+ Execution time: 0.340 ms
+
+SET enable_seqscan TO off;
+
+EXPLAIN(ANALYZE) SELECT DISTINCT b.hometown
+FROM bands b
+WHERE b.hometown IS NOT NULL
+ORDER BY b.hometown
+LIMIT 15;
+
+                                                                  QUERY PLAN                                                                  
+----------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=0.14..6.24 rows=15 width=32) (actual time=15.464..15.489 rows=15 loops=1)
+   ->  Unique  (cost=0.14..12.76 rows=31 width=32) (actual time=15.462..15.484 rows=15 loops=1)
+         ->  Index Only Scan using hometown_indx on bands b  (cost=0.14..12.68 rows=31 width=32) (actual time=15.459..15.473 rows=26 loops=1)
+               Index Cond: (hometown IS NOT NULL)
+               Heap Fetches: 26
+ Planning time: 0.129 ms
+ Execution time: 15.541 ms
+
