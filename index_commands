@@ -1,0 +1,32 @@
+CREATE INDEX first_name_idx
+ON public.guitar_players (first_name);
+	
+CREATE INDEX last_name_idx
+ON public.guitar_players (last_name);
+	
+CREATE INDEX birth_date_idx
+ON public.guitar_players (birth_date);
+	
+CREATE INDEX band_name_idx
+ON public.bands (band_name);
+	
+CREATE INDEX hometown_idx 
+ON public.bands (hometown);
+	
+CREATE INDEX genre_name_idx
+ON public.genres (genre_name);
+	
+CREATE INDEX country_name_idx
+ON public.countries (country_name);
+	
+CREATE INDEX label_name_idx 
+ON public.labels (label_name);	
+	
+-- Easy queries
+-- The cost of the first and second query still the same. The cost of the third and the 
+-- fourth query grew up.
+ 
+
+-- Medium queries
+-- After indexing the first query cost grew up. The second and the third query cost still -- the same
+	
