@@ -1,0 +1,34 @@
+--
+--show in which bands from "bands" play guitarists
+--
+
+SELECT gpb.first_name, gpb.last_name, b.band_name
+FROM (SELECT g.first_name, g.last_name, gp.band_id
+FROM guitar_players g
+RIGHT JOIN gp_band_relations gp ON g.id = gp.guitar_player_id) AS gpb
+RIGHT JOIN bands b ON b.id = gpb.band_id
+WHERE gpb.first_name IS NOT NULL
+ORDER BY gpb.first_name, gpb.last_name;
+
+--
+--counts how many genres recorded Warner Brosers with guitarists from "guitar_players"
+--
+
+SELECT COUNT (*) 
+FROM (SELECT DISTINCT ag.genre_id
+FROM (SELECT g.id, g.first_name, g.last_name, l.label_name
+FROM guitar_players g
+RIGHT JOIN labels l ON g.label_id = l.id
+WHERE l.label_name = 'Warner Bros') AS wbgp
+RIGHT JOIN ag_relations ag ON wbgp.id = ag.guitar_player_id
+WHERE wbgp IS NOT NULL) as wbg ;
+
+--
+--counts how many guitarists recorded their tracks on every label from "labels"
+--
+
+SELECT l.label_name, COUNT (g.label_id)
+FROM guitar_players g
+RIGHT JOIN labels l ON g.label_id = l.id
+GROUP BY g.label_id, l.label_name; 
+
