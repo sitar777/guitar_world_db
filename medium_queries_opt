@@ -1,0 +1,201 @@
+Medium queries
+
+1) The cost of sorting with index in the 1st query is higher and it's slower. The cost of JOIN is lower with index, but it takes more time. The cost of seq scan is lower than Index scan and it takes less time. 
+
+EXPLAIN(ANALYZE) SELECT b.band_name, g.genre_name
+FROM bands AS b
+RIGHT JOIN genres AS g ON b.id = g.brightest_band_id
+ORDER BY b.band_name;
+
+                                                      QUERY PLAN                                                       
+-----------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=3.15..3.18 rows=14 width=64) (actual time=0.331..0.333 rows=14 loops=1)
+   Sort Key: b.band_name
+   Sort Method: quicksort  Memory: 26kB
+   ->  Hash Right Join  (cost=1.32..2.88 rows=14 width=64) (actual time=0.184..0.204 rows=14 loops=1)
+         Hash Cond: (b.id = g.brightest_band_id)
+         ->  Seq Scan on bands b  (cost=0.00..1.31 rows=31 width=36) (actual time=0.006..0.010 rows=31 loops=1)
+         ->  Hash  (cost=1.14..1.14 rows=14 width=36) (actual time=0.063..0.063 rows=14 loops=1)
+               Buckets: 1024  Batches: 1  Memory Usage: 9kB
+               ->  Seq Scan on genres g  (cost=0.00..1.14 rows=14 width=36) (actual time=0.045..0.050 rows=14 loops=1)
+ Planning time: 26.991 ms
+ Execution time: 0.379 ms
+
+
+CREATE INDEX brightest_band_id_idx 
+ON genres (brightest_band_id);
+
+EXPLAIN(ANALYZE) SELECT b.band_name, g.genre_name
+FROM bands AS b
+RIGHT JOIN genres AS g ON b.id = g.brightest_band_id
+ORDER BY b.band_name;
+
+                                                      QUERY PLAN                                                       
+-----------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=3.15..3.18 rows=14 width=64) (actual time=0.199..0.201 rows=14 loops=1)
+   Sort Key: b.band_name
+   Sort Method: quicksort  Memory: 26kB
+   ->  Hash Right Join  (cost=1.32..2.88 rows=14 width=64) (actual time=0.076..0.090 rows=14 loops=1)
+         Hash Cond: (b.id = g.brightest_band_id)
+         ->  Seq Scan on bands b  (cost=0.00..1.31 rows=31 width=36) (actual time=0.005..0.007 rows=31 loops=1)
+         ->  Hash  (cost=1.14..1.14 rows=14 width=36) (actual time=0.031..0.031 rows=14 loops=1)
+               Buckets: 1024  Batches: 1  Memory Usage: 9kB
+               ->  Seq Scan on genres g  (cost=0.00..1.14 rows=14 width=36) (actual time=0.014..0.019 rows=14 loops=1)
+ Planning time: 0.211 ms
+ Execution time: 0.229 ms
+
+
+SET enable_seqscan TO off;
+
+EXPLAIN(ANALYZE) SELECT b.band_name, g.genre_name
+FROM bands AS b
+RIGHT JOIN genres AS g ON b.id = g.brightest_band_id
+ORDER BY b.band_name;
+
+                                                                    QUERY PLAN                                                                   
+------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=25.47..25.50 rows=14 width=64) (actual time=18.825..18.828 rows=14 loops=1)
+   Sort Key: b.band_name
+   Sort Method: quicksort  Memory: 26kB
+   ->  Merge Left Join  (cost=0.27..25.20 rows=14 width=64) (actual time=18.609..18.650 rows=14 loops=1)
+         Merge Cond: (g.brightest_band_id = b.id)
+         ->  Index Scan using brightest_band_id_idx on genres g  (cost=0.14..12.35 rows=14 width=36) (actual time=0.058..0.074 rows=14 loops=1)
+         ->  Index Scan using bands_pk on bands b  (cost=0.14..12.60 rows=31 width=36) (actual time=18.526..18.551 rows=31 loops=1)
+ Planning time: 0.977 ms
+ Execution time: 19.088 ms
+
+2) The cost of sorting with index in the 2nd query is higher and it's slower. The cost of JOIN is lower with index, but it takes more time. The cost of seq scan is lower than Index scan and it takes less time. 
+
+
+EXPLAIN(ANALYZE) SELECT g.first_name, g.last_name, c.country_name
+FROM countries c
+LEFT JOIN guitar_players g ON c.id = g.country_id
+ORDER BY g.first_name, g.last_name
+LIMIT 10;
+
+                                                          QUERY PLAN                                                           
+-------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=2.60..2.62 rows=10 width=96) (actual time=0.309..0.322 rows=10 loops=1)
+   ->  Sort  (cost=2.60..2.63 rows=15 width=96) (actual time=0.309..0.321 rows=10 loops=1)
+         Sort Key: g.first_name, g.last_name
+         Sort Method: quicksort  Memory: 26kB
+         ->  Hash Right Join  (cost=1.07..2.30 rows=15 width=96) (actual time=0.102..0.118 rows=15 loops=1)
+               Hash Cond: (g.country_id = c.id)
+               ->  Seq Scan on guitar_players g  (cost=0.00..1.15 rows=15 width=68) (actual time=0.033..0.037 rows=15 loops=1)
+               ->  Hash  (cost=1.03..1.03 rows=3 width=36) (actual time=0.036..0.036 rows=3 loops=1)
+                     Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                     ->  Seq Scan on countries c  (cost=0.00..1.03 rows=3 width=36) (actual time=0.026..0.026 rows=3 loops=1)
+ Planning time: 11.834 ms
+ Execution time: 0.416 ms
+
+CREATE INDEX country_id_idx 
+ON guitar_players (country_id);
+
+EXPLAIN(ANALYZE) SELECT g.first_name, g.last_name, c.country_name
+FROM countries c
+LEFT JOIN guitar_players g ON c.id = g.country_id
+ORDER BY g.first_name, g.last_name
+LIMIT 10;
+
+                                                          QUERY PLAN                                                           
+-------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=2.60..2.62 rows=10 width=96) (actual time=0.193..0.196 rows=10 loops=1)
+   ->  Sort  (cost=2.60..2.63 rows=15 width=96) (actual time=0.193..0.196 rows=10 loops=1)
+         Sort Key: g.first_name, g.last_name
+         Sort Method: quicksort  Memory: 26kB
+         ->  Hash Right Join  (cost=1.07..2.30 rows=15 width=96) (actual time=0.042..0.060 rows=15 loops=1)
+               Hash Cond: (g.country_id = c.id)
+               ->  Seq Scan on guitar_players g  (cost=0.00..1.15 rows=15 width=68) (actual time=0.006..0.011 rows=15 loops=1)
+               ->  Hash  (cost=1.03..1.03 rows=3 width=36) (actual time=0.022..0.022 rows=3 loops=1)
+                     Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                     ->  Seq Scan on countries c  (cost=0.00..1.03 rows=3 width=36) (actual time=0.011..0.014 rows=3 loops=1)
+ Planning time: 0.220 ms
+ Execution time: 0.257 ms
+
+SET enable_seqscan TO off;
+
+EXPLAIN(ANALYZE) SELECT g.first_name, g.last_name, c.country_name
+FROM countries c
+LEFT JOIN guitar_players g ON c.id = g.country_id
+ORDER BY g.first_name, g.last_name
+LIMIT 10;
+
+                                                                      QUERY PLAN                                                                       
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=24.90..24.93 rows=10 width=96) (actual time=23.995..24.000 rows=10 loops=1)
+   ->  Sort  (cost=24.90..24.94 rows=15 width=96) (actual time=23.993..23.994 rows=10 loops=1)
+         Sort Key: g.first_name, g.last_name
+         Sort Method: quicksort  Memory: 26kB
+         ->  Merge Left Join  (cost=0.27..24.61 rows=15 width=96) (actual time=23.786..23.809 rows=15 loops=1)
+               Merge Cond: (c.id = g.country_id)
+               ->  Index Scan using countries_pk on countries c  (cost=0.13..12.18 rows=3 width=36) (actual time=23.733..23.734 rows=3 loops=1)
+               ->  Index Scan using country_id_idx on guitar_players g  (cost=0.14..12.36 rows=15 width=68) (actual time=0.041..0.053 rows=15 loops=1)
+ Planning time: 0.224 ms
+ Execution time: 24.070 ms
+
+
+3) The cost of sorting with index in the 3rd query is higher and it takes more time. After adding index JOIN is transformed to Nested Loop which is faster and the cost is lower. The cost of seq scan is lower than Index scan and it takes less time.
+
+EXPLAIN(ANALYZE) SELECT g.first_name, g.last_name, l.label_name
+FROM labels l
+INNER JOIN guitar_players g ON l.id = g.label_id 
+WHERE g.country_id = 266
+ORDER BY g.first_name, g.last_name;
+
+                                                        QUERY PLAN                                                          
+------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=2.37..2.38 rows=1 width=96) (actual time=1.311..1.313 rows=10 loops=1)
+   Sort Key: g.first_name, g.last_name
+   Sort Method: quicksort  Memory: 25kB
+   ->  Hash Join  (cost=1.20..2.36 rows=1 width=96) (actual time=0.068..0.076 rows=10 loops=1)
+         Hash Cond: (l.id = g.label_id)
+         ->  Seq Scan on labels l  (cost=0.00..1.11 rows=11 width=36) (actual time=0.014..0.017 rows=11 loops=1)
+         ->  Hash  (cost=1.19..1.19 rows=1 width=68) (actual time=0.028..0.028 rows=10 loops=1)
+               Buckets: 1024  Batches: 1  Memory Usage: 9kB
+               ->  Seq Scan on guitar_players g  (cost=0.00..1.19 rows=1 width=68) (actual time=0.014..0.019 rows=10 loops=1)
+                     Filter: (country_id = 266)
+                     Rows Removed by Filter: 5
+ Planning time: 0.282 ms
+ Execution time: 1.361 ms
+
+
+CREATE INDEX label_id_idx 
+ON guitar_players (label_id);
+
+EXPLAIN(ANALYZE) SELECT g.first_name, g.last_name, l.label_name
+FROM labels l
+INNER JOIN guitar_players g ON l.id = g.label_id 
+WHERE g.country_id = 266
+ORDER BY g.first_name, g.last_name;
+
+                                                          QUERY PLAN                                                          
+------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=2.37..2.38 rows=1 width=96) (actual time=0.146..0.149 rows=10 loops=1)
+   Sort Key: g.first_name, g.last_name
+   Sort Method: quicksort  Memory: 25kB
+   ->  Hash Join  (cost=1.20..2.36 rows=1 width=96) (actual time=0.058..0.065 rows=10 loops=1)
+         Hash Cond: (l.id = g.label_id)
+         ->  Seq Scan on labels l  (cost=0.00..1.11 rows=11 width=36) (actual time=0.011..0.011 rows=11 loops=1)
+         ->  Hash  (cost=1.19..1.19 rows=1 width=68) (actual time=0.027..0.027 rows=10 loops=1)
+               Buckets: 1024  Batches: 1  Memory Usage: 9kB
+               ->  Seq Scan on guitar_players g  (cost=0.00..1.19 rows=1 width=68) (actual time=0.010..0.017 rows=10 loops=1)
+                     Filter: (country_id = 266)
+                     Rows Removed by Filter: 5
+ Planning time: 0.337 ms
+ Execution time: 0.223 ms
+
+SET enable_seqscan TO off;
+
+                                                                  QUERY PLAN                                                                   
+-----------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=16.33..16.33 rows=1 width=96) (actual time=0.156..0.158 rows=10 loops=1)
+   Sort Key: g.first_name, g.last_name
+   Sort Method: quicksort  Memory: 25kB
+   ->  Nested Loop  (cost=0.27..16.32 rows=1 width=96) (actual time=0.028..0.063 rows=10 loops=1)
+         ->  Index Scan using country_id_idx on guitar_players g  (cost=0.14..8.15 rows=1 width=68) (actual time=0.019..0.028 rows=10 loops=1)
+               Index Cond: (country_id = 266)
+         ->  Index Scan using labels_pk on labels l  (cost=0.14..8.15 rows=1 width=36) (actual time=0.002..0.003 rows=1 loops=10)
+               Index Cond: (id = g.label_id)
+ Planning time: 0.262 ms
+ Execution time: 0.198 ms
+
