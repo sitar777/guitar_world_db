@@ -5,7 +5,7 @@
 SELECT gpb.first_name, gpb.last_name, b.band_name
 FROM (SELECT g.first_name, g.last_name, gp.band_id
 FROM guitar_players g
-RIGHT JOIN gp_band_relations gp ON g.id = gp.guitar_player_id) AS gpb
+RIGHT JOIN gp_band_relations gp ON g.id = gp.id) AS gpb
 RIGHT JOIN bands b ON b.id = gpb.band_id
 WHERE gpb.first_name IS NOT NULL
 ORDER BY gpb.first_name, gpb.last_name;
@@ -20,7 +20,7 @@ FROM (SELECT g.id, g.first_name, g.last_name, l.label_name
 FROM guitar_players g
 RIGHT JOIN labels l ON g.label_id = l.id
 WHERE l.label_name = 'Warner Bros') AS wbgp
-RIGHT JOIN ag_relations ag ON wbgp.id = ag.guitar_player_id
+RIGHT JOIN ag_relations ag ON wbgp.id = ag.id
 WHERE wbgp IS NOT NULL) as wbg ;
 
 --
