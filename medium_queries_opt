@@ -139,7 +139,7 @@ LIMIT 10;
 EXPLAIN(ANALYZE) SELECT g.first_name, g.last_name, l.label_name
 FROM labels l
 INNER JOIN guitar_players g ON l.id = g.label_id 
-WHERE g.country_id = 266
+WHERE g.country_id = 1
 ORDER BY g.first_name, g.last_name;
 
                                                         QUERY PLAN                                                          
@@ -153,7 +153,7 @@ ORDER BY g.first_name, g.last_name;
          ->  Hash  (cost=1.19..1.19 rows=1 width=68) (actual time=0.028..0.028 rows=10 loops=1)
                Buckets: 1024  Batches: 1  Memory Usage: 9kB
                ->  Seq Scan on guitar_players g  (cost=0.00..1.19 rows=1 width=68) (actual time=0.014..0.019 rows=10 loops=1)
-                     Filter: (country_id = 266)
+                     Filter: (country_id = 1)
                      Rows Removed by Filter: 5
  Planning time: 0.282 ms
  Execution time: 1.361 ms
@@ -165,7 +165,7 @@ ON guitar_players (label_id);
 EXPLAIN(ANALYZE) SELECT g.first_name, g.last_name, l.label_name
 FROM labels l
 INNER JOIN guitar_players g ON l.id = g.label_id 
-WHERE g.country_id = 266
+WHERE g.country_id = 1
 ORDER BY g.first_name, g.last_name;
 
                                                           QUERY PLAN                                                          
@@ -179,7 +179,7 @@ ORDER BY g.first_name, g.last_name;
          ->  Hash  (cost=1.19..1.19 rows=1 width=68) (actual time=0.027..0.027 rows=10 loops=1)
                Buckets: 1024  Batches: 1  Memory Usage: 9kB
                ->  Seq Scan on guitar_players g  (cost=0.00..1.19 rows=1 width=68) (actual time=0.010..0.017 rows=10 loops=1)
-                     Filter: (country_id = 266)
+                     Filter: (country_id = 1)
                      Rows Removed by Filter: 5
  Planning time: 0.337 ms
  Execution time: 0.223 ms
@@ -193,7 +193,7 @@ SET enable_seqscan TO off;
    Sort Method: quicksort  Memory: 25kB
    ->  Nested Loop  (cost=0.27..16.32 rows=1 width=96) (actual time=0.028..0.063 rows=10 loops=1)
          ->  Index Scan using country_id_idx on guitar_players g  (cost=0.14..8.15 rows=1 width=68) (actual time=0.019..0.028 rows=10 loops=1)
-               Index Cond: (country_id = 266)
+               Index Cond: (country_id = 1)
          ->  Index Scan using labels_pk on labels l  (cost=0.14..8.15 rows=1 width=36) (actual time=0.002..0.003 rows=1 loops=10)
                Index Cond: (id = g.label_id)
  Planning time: 0.262 ms
