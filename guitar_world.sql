@@ -39,64 +39,162 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE ab_relations (
-    ab_relation_id integer NOT NULL,
     guitar_player_id integer NOT NULL,
-    brand_id integer NOT NULL
+    brand_id integer NOT NULL,
+    id integer NOT NULL
 );
 
 
 ALTER TABLE ab_relations OWNER TO postgres;
 
 --
--- Name: ag_relations; Type: TABLE; Schema: public; Owner: postgres
+-- Name: ab_relations_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE ab_relations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE ab_relations_id_seq OWNER TO postgres;
+
+--
+-- Name: ab_relations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE ab_relations_id_seq OWNED BY ab_relations.id;
+
+
+--
+-- Name: ag_relations; Type: TABLE; Schema: public; Owner: kirill
 --
 
 CREATE TABLE ag_relations (
-    ag_relation_id integer NOT NULL,
     guitar_player_id integer NOT NULL,
-    genre_id integer NOT NULL
+    genre_id integer NOT NULL,
+    id integer NOT NULL
 );
 
 
-ALTER TABLE ag_relations OWNER TO postgres;
+ALTER TABLE ag_relations OWNER TO kirill;
+
+--
+-- Name: ag_relations_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE ag_relations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE ag_relations_id_seq OWNER TO postgres;
+
+--
+-- Name: ag_relations_id_seq1; Type: SEQUENCE; Schema: public; Owner: kirill
+--
+
+CREATE SEQUENCE ag_relations_id_seq1
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE ag_relations_id_seq1 OWNER TO kirill;
+
+--
+-- Name: ag_relations_id_seq1; Type: SEQUENCE OWNED BY; Schema: public; Owner: kirill
+--
+
+ALTER SEQUENCE ag_relations_id_seq1 OWNED BY ag_relations.id;
+
 
 --
 -- Name: bands; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE bands (
-    id integer NOT NULL,
-    band_name text NOT NULL,
+    band_name character varying(256) NOT NULL,
     is_playing boolean NOT NULL,
-    hometown text,
-    one_man_band boolean NOT NULL
+    hometown character varying(256),
+    one_man_band boolean NOT NULL,
+    id integer NOT NULL
 );
 
 
 ALTER TABLE bands OWNER TO postgres;
 
 --
+-- Name: bands_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE bands_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE bands_id_seq OWNER TO postgres;
+
+--
+-- Name: bands_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE bands_id_seq OWNED BY bands.id;
+
+
+--
 -- Name: countries; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE countries (
-    id integer NOT NULL,
-    country_name text NOT NULL
+    country_name character varying(256) NOT NULL,
+    id integer NOT NULL
 );
 
 
 ALTER TABLE countries OWNER TO postgres;
 
 --
+-- Name: countries_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE countries_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE countries_id_seq OWNER TO postgres;
+
+--
+-- Name: countries_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE countries_id_seq OWNED BY countries.id;
+
+
+--
 -- Name: genres; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE genres (
-    id integer NOT NULL,
-    genre_name text NOT NULL,
-    place_of_origin text NOT NULL,
+    genre_name character varying(256) NOT NULL,
+    country_of_origin_id integer NOT NULL,
     year_of_occurrence smallint NOT NULL,
     brightest_band_id integer NOT NULL,
+    id integer NOT NULL,
     CONSTRAINT genre_year_of_occurrence_check CHECK ((year_of_occurrence > 1850))
 );
 
@@ -104,46 +202,131 @@ CREATE TABLE genres (
 ALTER TABLE genres OWNER TO postgres;
 
 --
+-- Name: genres_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE genres_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE genres_id_seq OWNER TO postgres;
+
+--
+-- Name: genres_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE genres_id_seq OWNED BY genres.id;
+
+
+--
 -- Name: gp_band_relations; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE gp_band_relations (
-    gp_band_relation_id integer NOT NULL,
     band_id integer NOT NULL,
-    guitar_player_id integer NOT NULL
+    guitar_player_id integer NOT NULL,
+    id integer NOT NULL
 );
 
 
 ALTER TABLE gp_band_relations OWNER TO postgres;
 
 --
+-- Name: gp_band_relations_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE gp_band_relations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE gp_band_relations_id_seq OWNER TO postgres;
+
+--
+-- Name: gp_band_relations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE gp_band_relations_id_seq OWNED BY gp_band_relations.id;
+
+
+--
 -- Name: guitar_brands; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE guitar_brands (
-    id integer NOT NULL,
-    brand_name text NOT NULL
+    brand_name character varying(256) NOT NULL,
+    id integer NOT NULL
 );
 
 
 ALTER TABLE guitar_brands OWNER TO postgres;
 
 --
+-- Name: guitar_brands_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE guitar_brands_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE guitar_brands_id_seq OWNER TO postgres;
+
+--
+-- Name: guitar_brands_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE guitar_brands_id_seq OWNED BY guitar_brands.id;
+
+
+--
 -- Name: guitar_players; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE guitar_players (
-    id integer NOT NULL,
-    first_name text NOT NULL,
-    last_name text,
+    first_name character varying(256) NOT NULL,
+    last_name character varying(256),
     birth_date date NOT NULL,
     death_date date,
     country_id integer NOT NULL,
-    label_id integer NOT NULL
+    label_id integer NOT NULL,
+    id integer NOT NULL,
+    CONSTRAINT birth_death_date CHECK ((birth_date < death_date))
 );
 
 
 ALTER TABLE guitar_players OWNER TO postgres;
+
+--
+-- Name: guitar_players_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE guitar_players_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE guitar_players_id_seq OWNER TO postgres;
+
+--
+-- Name: guitar_players_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE guitar_players_id_seq OWNED BY guitar_players.id;
+
 
 --
 -- Name: id; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -164,272 +347,426 @@ ALTER TABLE id OWNER TO postgres;
 --
 
 CREATE TABLE labels (
-    id integer NOT NULL,
-    label_name text NOT NULL
+    label_name character varying(256) NOT NULL,
+    id integer NOT NULL
 );
 
 
 ALTER TABLE labels OWNER TO postgres;
 
 --
+-- Name: labels_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE labels_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE labels_id_seq OWNER TO postgres;
+
+--
+-- Name: labels_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE labels_id_seq OWNED BY labels.id;
+
+
+--
+-- Name: ab_relations id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY ab_relations ALTER COLUMN id SET DEFAULT nextval('ab_relations_id_seq'::regclass);
+
+
+--
+-- Name: ag_relations id; Type: DEFAULT; Schema: public; Owner: kirill
+--
+
+ALTER TABLE ONLY ag_relations ALTER COLUMN id SET DEFAULT nextval('ag_relations_id_seq1'::regclass);
+
+
+--
+-- Name: bands id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY bands ALTER COLUMN id SET DEFAULT nextval('bands_id_seq'::regclass);
+
+
+--
+-- Name: countries id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY countries ALTER COLUMN id SET DEFAULT nextval('countries_id_seq'::regclass);
+
+
+--
+-- Name: genres id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY genres ALTER COLUMN id SET DEFAULT nextval('genres_id_seq'::regclass);
+
+
+--
+-- Name: gp_band_relations id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY gp_band_relations ALTER COLUMN id SET DEFAULT nextval('gp_band_relations_id_seq'::regclass);
+
+
+--
+-- Name: guitar_brands id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY guitar_brands ALTER COLUMN id SET DEFAULT nextval('guitar_brands_id_seq'::regclass);
+
+
+--
+-- Name: guitar_players id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY guitar_players ALTER COLUMN id SET DEFAULT nextval('guitar_players_id_seq'::regclass);
+
+
+--
+-- Name: labels id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY labels ALTER COLUMN id SET DEFAULT nextval('labels_id_seq'::regclass);
+
+
+--
 -- Data for Name: ab_relations; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY ab_relations (ab_relation_id, guitar_player_id, brand_id) FROM stdin;
-238	114	152
-239	102	153
-240	111	153
-241	113	153
-242	100	154
-243	101	154
-244	103	154
-245	104	154
-246	107	154
-247	108	154
-248	110	154
-249	111	154
-250	112	154
-251	100	155
-252	101	155
-253	103	155
-254	105	155
-255	106	155
-256	110	155
-257	111	155
-258	107	156
-259	109	156
-260	110	156
-261	109	157
-262	107	158
-263	102	159
-264	100	160
-265	103	160
+COPY ab_relations (guitar_player_id, brand_id, id) FROM stdin;
+15	1	2
+3	2	3
+12	2	4
+14	2	5
+1	3	6
+2	3	7
+4	3	8
+5	3	9
+8	3	10
+9	3	11
+11	3	12
+12	3	13
+13	3	14
+1	4	15
+2	4	16
+4	4	17
+6	4	18
+7	4	19
+11	4	20
+12	4	21
+8	5	22
+10	5	23
+11	5	24
+10	6	25
+8	7	26
+3	8	27
+1	9	28
+4	9	29
 \.
 
 
 --
--- Data for Name: ag_relations; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Name: ab_relations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-COPY ag_relations (ag_relation_id, guitar_player_id, genre_id) FROM stdin;
-192	100	138
-193	100	139
-194	100	140
-195	101	140
-196	101	139
-197	101	141
-198	102	140
-199	102	142
-200	103	140
-201	103	139
-202	103	138
-203	103	143
-204	104	144
-205	104	140
-206	104	142
-207	104	139
-208	105	143
-209	105	139
-210	106	141
-211	106	138
-212	106	139
-213	106	145
-214	107	146
-215	107	142
-216	107	140
-217	108	140
-218	108	139
-219	108	147
-220	109	146
-221	109	142
-222	109	148
-223	110	140
-224	110	142
-225	111	140
-226	111	142
-227	111	141
-228	112	147
-229	112	143
-230	112	149
-231	113	141
-232	113	140
-233	113	142
-234	113	145
-235	113	150
-236	114	139
-237	114	151
+SELECT pg_catalog.setval('ab_relations_id_seq', 29, true);
+
+
+--
+-- Data for Name: ag_relations; Type: TABLE DATA; Schema: public; Owner: kirill
+--
+
+COPY ag_relations (guitar_player_id, genre_id, id) FROM stdin;
+1	1	1
+1	2	2
+1	3	3
+2	3	4
+2	2	5
+2	4	6
+3	3	7
+3	5	8
+4	3	9
+4	2	10
+4	1	11
+4	6	12
+5	7	13
+5	3	14
+5	5	15
+5	2	16
+6	6	17
+6	2	18
+7	4	19
+7	1	20
+7	2	21
+7	8	22
+8	9	23
+8	5	24
+8	3	25
+9	3	26
+9	2	27
+9	10	28
+10	9	29
+10	5	30
+10	11	31
+11	3	32
+11	5	33
+12	3	34
+12	5	35
+12	4	36
+13	10	37
+13	6	38
+13	2	39
+14	4	40
+14	3	41
+14	5	42
+14	8	43
+14	13	44
+15	2	45
+15	14	46
 \.
+
+
+--
+-- Name: ag_relations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('ag_relations_id_seq', 1, false);
+
+
+--
+-- Name: ag_relations_id_seq1; Type: SEQUENCE SET; Schema: public; Owner: kirill
+--
+
+SELECT pg_catalog.setval('ag_relations_id_seq1', 46, true);
 
 
 --
 -- Data for Name: bands; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY bands (id, band_name, is_playing, hometown, one_man_band) FROM stdin;
-115	The Jimi Hendrix Experience	f	London	f
-116	Led Zeppelin	f	London	f
-117	The Youngbirds	t	London	f
-118	Van Halen	t	Pasadena	t
-119	Cream	f	London	f
-120	Eric Clapton	t	Surrey	t
-121	Guns`N Roses	t	Los-Angeles	f
-122	Slash`s Snakepit	f	Los-Angeles	t
-123	Double Trouble	t	Austin	f
-124	Pink Floyd	f	London	f
-125	Metallica	t	Los-Angeles	f
-126	Exodus	t	San-Francisco	f
-127	AC/DC	t	Sydney	f
-128	Pantera	f	Arlington	f
-129	Damageplan	f	Dallas	t
-130	Ozzy Osbourne	t	Birmingham	t
-131	Quiet Riot	t	Los-Angeles	f
-132	Smile	f	London	f
-133	Queen	t	London	f
-134	Chuck Berry	f	Wentzville	t
-135	Whitesnake	f	Middlesbrough	f
-136	G3	f	\N	t
-137	Santana	t	Jalisco	t
-161	The Beatles	f	Liverpool	f
-162	Judas Priest	t	Birmingham	f
-163	B.B.King	f	Las-Vegas	t
-164	David Bowie	f	Manhattan	t
-165	Elvis Presley	f	Tupelo	t
-166	Ornette Coleman	f	Manhattan	t
-280	Bon Jovi	t	New-Jersey	f
-281	Steve Vai	t	New-York	t
+COPY bands (band_name, is_playing, hometown, one_man_band, id) FROM stdin;
+The Jimi Hendrix Experience	f	London	f	1
+Led Zeppelin	f	London	f	2
+The Youngbirds	t	London	f	3
+Van Halen	t	Pasadena	t	4
+Cream	f	London	f	5
+Eric Clapton	t	Surrey	t	6
+Guns'N Roses	t	Los-Angeles	f	7
+Slash's Snakepit	f	Los-Angeles	t	8
+Double Trouble	t	Austin	f	9
+Pink Floyd	f	London	f	10
+Metallica	t	Los-Angeles	f	11
+Exodus	t	San-Francisco	f	12
+AC/DC	t	Sydney	f	13
+Pantera	f	Arlington	f	14
+Damageplan	f	Dallas	t	15
+Ozzy Osbourne	t	Birmingham	t	16
+Quet Riot	t	Los-Angeles	f	17
+Smile	f	London	f	18
+Queen 	t	London	f	19
+Chuck Berry	f	Wentzwille	t	20
+Whitesnake	f	Middlesbrough	f	21
+G3	f		t	22
+Santana	t	Jalisco	t	23
+The Beatles	f	Liverpool	f	24
+Judas Priest	t	Birmingham	f	25
+B.B.King	f	Las-Vegas	t	26
+David Bowie	f	Manhattan	t	27
+Elvis Presley	f	Tupelo	t	28
+Ornette Coleman	f	Manhattan	t	29
+Bon Jovi	t	New-Jersey	f	30
+Steve Vai	t	New-York	t	31
 \.
+
+
+--
+-- Name: bands_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('bands_id_seq', 31, true);
 
 
 --
 -- Data for Name: countries; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY countries (id, country_name) FROM stdin;
-266	USA
-267	Great Britain
-268	Australia
+COPY countries (country_name, id) FROM stdin;
+USA	1
+Great Britain	2
+Australia	3
 \.
+
+
+--
+-- Name: countries_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('countries_id_seq', 3, true);
 
 
 --
 -- Data for Name: genres; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY genres (id, genre_name, place_of_origin, year_of_occurrence, brightest_band_id) FROM stdin;
-138	Psychedelic Rock	Great Britain	1960	161
-139	Blues Rock	Great Britain	1960	120
-140	Hard Rock	Great Britain	1970	127
-141	Progressive Rock	Great Britain	1960	124
-142	Heavy Metal	Great Britain	1970	162
-143	Blues	USA	1880	163
-144	Glam Metal	USA	1983	280
-145	Experimental Rock	USA	1960	164
-146	Trash Metal	USA	1980	125
-147	Rock and Roll	USA	1950	165
-148	Groove Metal	USA	1990	128
-149	Rhythm and Blues	USA	1940	134
-150	Instrumental Rock	USA	1950	281
-151	Free Jazz	USA	1960	166
+COPY genres (genre_name, country_of_origin_id, year_of_occurrence, brightest_band_id, id) FROM stdin;
+Psychedelic Rock	2	1960	24	1
+Blues Rock	2	1960	6	2
+Hard Rock	2	1970	13	3
+Progresiive Rock	2	1960	10	4
+Heavy Metal	2	1970	25	5
+Blues	1	1880	26	6
+Glam Metal	1	1983	30	7
+Experimental Rock	1	1960	27	8
+Trash Metal	1	1980	11	9
+Rock and Roll	1	1950	28	10
+Groove Metal	1	1990	14	11
+Rhythm and Blues	1	1940	20	12
+Instrumental Rock	1	1950	31	13
+Free Jazz	1	1960	29	14
 \.
+
+
+--
+-- Name: genres_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('genres_id_seq', 17, true);
 
 
 --
 -- Data for Name: gp_band_relations; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY gp_band_relations (gp_band_relation_id, band_id, guitar_player_id) FROM stdin;
-167	115	100
-168	116	101
-169	117	101
-170	118	102
-171	117	103
-172	119	103
-173	120	103
-174	121	104
-175	122	104
-176	123	105
-177	124	106
-178	125	107
-179	126	107
-180	127	108
-181	128	109
-182	129	109
-183	130	110
-184	131	110
-185	132	111
-186	133	111
-187	134	112
-188	136	112
-189	130	113
-190	135	113
-191	137	114
+COPY gp_band_relations (band_id, guitar_player_id, id) FROM stdin;
+1	1	1
+2	2	2
+3	2	3
+4	3	4
+3	4	5
+5	4	6
+6	4	7
+7	5	8
+8	5	9
+9	6	10
+10	7	11
+11	8	12
+12	8	13
+13	9	14
+14	10	15
+15	10	16
+16	11	17
+17	11	18
+18	12	19
+19	12	20
+20	13	21
+22	13	22
+16	14	23
+21	14	24
+23	15	25
 \.
+
+
+--
+-- Name: gp_band_relations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('gp_band_relations_id_seq', 25, true);
 
 
 --
 -- Data for Name: guitar_brands; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY guitar_brands (id, brand_name) FROM stdin;
-152	PRS
-153	Ibanez
-154	Gibson
-155	Fender
-156	Jackson
-157	Dean
-158	ESP
-159	EVH
-160	Gretsch
+COPY guitar_brands (brand_name, id) FROM stdin;
+PRS	1
+Ibanez	2
+Gibson	3
+Fender	4
+Jackson	5
+Dean	6
+ESP	7
+EVH	8
+Gretsch	9
 \.
+
+
+--
+-- Name: guitar_brands_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('guitar_brands_id_seq', 9, true);
 
 
 --
 -- Data for Name: guitar_players; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY guitar_players (id, first_name, last_name, birth_date, death_date, country_id, label_id) FROM stdin;
-100	Jimi	Hendrix	1942-11-27	1970-09-18	266	269
-101	Jimmy	Page	1944-01-09	\N	267	270
-102	Edward	van Halen	1955-01-26	\N	266	271
-103	Eric	Clapton	1945-03-30	\N	267	271
-104	Slash	\N	1965-07-23	\N	266	272
-105	Stevie	Vaughan	1954-10-03	1990-08-27	266	273
-106	David	Guilmour	1946-03-06	\N	267	274
-107	Kirk	Hammett	1962-11-18	\N	266	271
-108	Angus	Young	1955-03-31	\N	268	274
-109	Darell	Dimebag	1966-08-20	2004-11-08	266	275
-110	Randy	Rhoads	1965-11-06	1982-03-19	266	273
-111	Brian	May	1947-07-19	\N	267	276
-112	Chuck	Berry	1926-10-18	2017-03-18	266	277
-113	Steve	Vai	1960-07-06	\N	266	278
-114	Carlos	Santana	1947-07-20	\N	266	279
+COPY guitar_players (first_name, last_name, birth_date, death_date, country_id, label_id, id) FROM stdin;
+Jimi	Hendrix	1942-11-27	1970-09-18	1	1	1
+Jimmy	Page	1944-01-09	\N	2	2	2
+Edward	van Halen	1955-01-26	\N	1	3	3
+Eric	Clapton	1945-03-30	\N	2	3	4
+Slash		1965-07-23	\N	1	4	5
+Stevie	Vaughan	1954-10-03	1990-08-27	1	5	6
+David 	Guilmour	1946-03-06	\N	2	6	7
+Kirk	Hammett	1962-11-18	\N	1	3	8
+Angus	Young	1955-03-31	\N	3	6	9
+Darell	Dimebag	1966-08-20	2004-11-08	1	7	10
+Randy	Rhoads	1965-11-06	1982-03-19	1	5	11
+Brian	May	1947-07-19	\N	2	8	12
+Chuck	Berry	1926-10-18	2017-03-18	1	9	13
+Steve	Vai	1960-07-06	\N	1	10	14
+Carlos	Santana	1947-07-20	\N	1	11	15
 \.
+
+
+--
+-- Name: guitar_players_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('guitar_players_id_seq', 16, true);
 
 
 --
 -- Name: id; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('id', 281, true);
+SELECT pg_catalog.setval('id', 100, false);
 
 
 --
 -- Data for Name: labels; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY labels (id, label_name) FROM stdin;
-269	Reprise Records
-270	Swan Song
-271	Warner Bros
-272	RCA
-273	Epic Records
-274	EMI
-275	Atco Records
-276	Parlophone
-277	Chess
-278	Favored Nations
-279	Columbia Records
+COPY labels (label_name, id) FROM stdin;
+Reprise Records	1
+Swan Song	2
+Warner Bros	3
+RCA	4
+Epic Records	5
+EMI	6
+Atco Records	7
+Parlophone	8
+Chess	9
+Favored Nations	10
+Columbia Records	11
 \.
+
+
+--
+-- Name: labels_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('labels_id_seq', 22, true);
 
 
 --
@@ -437,15 +774,15 @@ COPY labels (id, label_name) FROM stdin;
 --
 
 ALTER TABLE ONLY ab_relations
-    ADD CONSTRAINT ab_relations_pk PRIMARY KEY (ab_relation_id);
+    ADD CONSTRAINT ab_relations_pk PRIMARY KEY (id);
 
 
 --
--- Name: ag_relations ag_relations_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: ag_relations ag_relations_pkey; Type: CONSTRAINT; Schema: public; Owner: kirill
 --
 
 ALTER TABLE ONLY ag_relations
-    ADD CONSTRAINT ag_relations_pk PRIMARY KEY (ag_relation_id);
+    ADD CONSTRAINT ag_relations_pkey PRIMARY KEY (id);
 
 
 --
@@ -477,7 +814,7 @@ ALTER TABLE ONLY genres
 --
 
 ALTER TABLE ONLY gp_band_relations
-    ADD CONSTRAINT gp_band_relations_pk PRIMARY KEY (gp_band_relation_id);
+    ADD CONSTRAINT gp_band_relations_pk PRIMARY KEY (id);
 
 
 --
@@ -513,7 +850,7 @@ ALTER TABLE ONLY ab_relations
 
 
 --
--- Name: ag_relations unique_ag_relation; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: ag_relations unique_ag_relation; Type: CONSTRAINT; Schema: public; Owner: kirill
 --
 
 ALTER TABLE ONLY ag_relations
@@ -561,11 +898,109 @@ ALTER TABLE ONLY labels
 
 
 --
+-- Name: band_name_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX band_name_idx ON bands USING btree (band_name text_pattern_ops);
+
+
+--
+-- Name: birth_date_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX birth_date_idx ON guitar_players USING btree (birth_date);
+
+
+--
+-- Name: brightest_band_id_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX brightest_band_id_idx ON genres USING btree (brightest_band_id);
+
+
+--
+-- Name: country_id_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX country_id_idx ON guitar_players USING btree (country_id);
+
+
+--
+-- Name: country_name_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX country_name_idx ON countries USING btree (country_name text_pattern_ops);
+
+
+--
+-- Name: death_date_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX death_date_idx ON guitar_players USING btree (death_date NULLS FIRST);
+
+
+--
+-- Name: first_name_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX first_name_idx ON guitar_players USING btree (first_name text_pattern_ops);
+
+
+--
+-- Name: genre_name_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX genre_name_idx ON genres USING btree (genre_name text_pattern_ops);
+
+
+--
+-- Name: hometown_indx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX hometown_indx ON bands USING btree (hometown);
+
+
+--
+-- Name: is_playing_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX is_playing_idx ON bands USING btree (is_playing) WHERE is_playing;
+
+
+--
+-- Name: label_id_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX label_id_idx ON guitar_players USING btree (label_id);
+
+
+--
+-- Name: label_name_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX label_name_idx ON labels USING btree (label_name text_pattern_ops);
+
+
+--
+-- Name: last_name_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX last_name_idx ON guitar_players USING btree (last_name text_pattern_ops);
+
+
+--
+-- Name: one_man_band_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX one_man_band_idx ON bands USING btree (one_man_band) WHERE (NOT one_man_band);
+
+
+--
 -- Name: ab_relations ab_relations_brands_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY ab_relations
-    ADD CONSTRAINT ab_relations_brands_fk FOREIGN KEY (brand_id) REFERENCES guitar_brands(id);
+    ADD CONSTRAINT ab_relations_brands_fk FOREIGN KEY (brand_id) REFERENCES guitar_brands(id) ON UPDATE CASCADE;
 
 
 --
@@ -573,31 +1008,23 @@ ALTER TABLE ONLY ab_relations
 --
 
 ALTER TABLE ONLY ab_relations
-    ADD CONSTRAINT ab_relations_gp_fk FOREIGN KEY (guitar_player_id) REFERENCES guitar_players(id);
+    ADD CONSTRAINT ab_relations_gp_fk FOREIGN KEY (guitar_player_id) REFERENCES guitar_players(id) ON UPDATE CASCADE;
 
 
 --
--- Name: ag_relations ag_relations_genres_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY ag_relations
-    ADD CONSTRAINT ag_relations_genres_fk FOREIGN KEY (genre_id) REFERENCES genres(id);
-
-
---
--- Name: ag_relations ag_relations_gp_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: ag_relations ag_relations_genre_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kirill
 --
 
 ALTER TABLE ONLY ag_relations
-    ADD CONSTRAINT ag_relations_gp_fk FOREIGN KEY (guitar_player_id) REFERENCES guitar_players(id);
+    ADD CONSTRAINT ag_relations_genre_id_fkey FOREIGN KEY (genre_id) REFERENCES genres(id);
 
 
 --
--- Name: genres genre_country_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: ag_relations ag_relations_guitar_player_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kirill
 --
 
-ALTER TABLE ONLY genres
-    ADD CONSTRAINT genre_country_fk FOREIGN KEY (place_of_origin) REFERENCES countries(country_name);
+ALTER TABLE ONLY ag_relations
+    ADD CONSTRAINT ag_relations_guitar_player_id_fkey FOREIGN KEY (guitar_player_id) REFERENCES guitar_players(id);
 
 
 --
@@ -605,15 +1032,15 @@ ALTER TABLE ONLY genres
 --
 
 ALTER TABLE ONLY genres
-    ADD CONSTRAINT genres_brightest_band_id_fkey FOREIGN KEY (brightest_band_id) REFERENCES bands(id);
+    ADD CONSTRAINT genres_brightest_band_id_fkey FOREIGN KEY (brightest_band_id) REFERENCES bands(id) ON UPDATE CASCADE;
 
 
 --
--- Name: gp_band_relations gp_band_relations_band_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: genres genres_country_of_origin_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY gp_band_relations
-    ADD CONSTRAINT gp_band_relations_band_fk FOREIGN KEY (band_id) REFERENCES bands(id);
+ALTER TABLE ONLY genres
+    ADD CONSTRAINT genres_country_of_origin_id_fkey FOREIGN KEY (country_of_origin_id) REFERENCES countries(id);
 
 
 --
@@ -621,7 +1048,7 @@ ALTER TABLE ONLY gp_band_relations
 --
 
 ALTER TABLE ONLY gp_band_relations
-    ADD CONSTRAINT gp_band_relations_gp_fk FOREIGN KEY (guitar_player_id) REFERENCES guitar_players(id);
+    ADD CONSTRAINT gp_band_relations_gp_fk FOREIGN KEY (guitar_player_id) REFERENCES guitar_players(id) ON UPDATE CASCADE;
 
 
 --
@@ -629,7 +1056,7 @@ ALTER TABLE ONLY gp_band_relations
 --
 
 ALTER TABLE ONLY guitar_players
-    ADD CONSTRAINT guitar_players_country_id_fkey FOREIGN KEY (country_id) REFERENCES countries(id);
+    ADD CONSTRAINT guitar_players_country_id_fkey FOREIGN KEY (country_id) REFERENCES countries(id) ON UPDATE CASCADE;
 
 
 --
@@ -637,7 +1064,7 @@ ALTER TABLE ONLY guitar_players
 --
 
 ALTER TABLE ONLY guitar_players
-    ADD CONSTRAINT guitar_players_label_id_fkey FOREIGN KEY (label_id) REFERENCES labels(id);
+    ADD CONSTRAINT guitar_players_label_id_fkey FOREIGN KEY (label_id) REFERENCES labels(id) ON UPDATE CASCADE;
 
 
 --
