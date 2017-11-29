@@ -2,7 +2,7 @@
 
 SELECT g.first_name, g.last_name
 FROM guitar_players g
-WHERE g.country_id = 266;
+WHERE g.country_id = 1;
 
 --select all guitarists who are alive now, order by birth date
 
