@@ -21,6 +21,6 @@ LIMIT 10;
 SELECT g.first_name, g.last_name, l.label_name
 FROM labels l
 INNER JOIN guitar_players g ON l.id = g.label_id 
-WHERE g.country_id = 266
+WHERE g.country_id = 1
 ORDER BY g.first_name, g.last_name;
 
