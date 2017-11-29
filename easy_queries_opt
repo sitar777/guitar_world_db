@@ -4,12 +4,12 @@ Easy queries:
 
 EXPLAIN(ANALYZE) SELECT g.first_name, g.last_name
 FROM guitar_players g
-WHERE g.country_id = 266;
+WHERE g.country_id = 1;
 
                                                   QUERY PLAN                                                 
 ------------------------------------------------------------------------------------------------------------
  Seq Scan on guitar_players g  (cost=0.00..1.19 rows=1 width=64) (actual time=0.041..0.045 rows=10 loops=1)
- Filter: (country_id = 266)
+ Filter: (country_id = 1)
  Rows Removed by Filter: 5
  Planning time: 0.827 ms
  Execution time: 0.106 ms
@@ -20,12 +20,12 @@ ON public.guitar_players (country_id)
 
 EXPLAIN(ANALYZE) SELECT g.first_name, g.last_name
 FROM guitar_players g
-WHERE g.country_id = 266;
+WHERE g.country_id = 1;
 
                                                  QUERY PLAN                                                 
 ------------------------------------------------------------------------------------------------------------
  Seq Scan on guitar_players g  (cost=0.00..1.19 rows=1 width=64) (actual time=0.055..0.062 rows=10 loops=1)
- Filter: (country_id = 266)
+ Filter: (country_id = 1)
  Rows Removed by Filter: 5
  Planning time: 1.247 ms
  Execution time: 0.478 ms
@@ -34,12 +34,12 @@ SET enable_seqscan TO off;
 
 EXPLAIN(ANALYZE) SELECT g.first_name, g.last_name
 FROM guitar_players g
-WHERE g.country_id = 266;
+WHERE g.country_id = 1;
 
                                                             QUERY PLAN                                                             
 -----------------------------------------------------------------------------------------------------------------------------------
  Index Scan using country_id_idx on guitar_players g  (cost=0.14..8.15 rows=1 width=64) (actual time=0.095..0.104 rows=10 loops=1)
- Index Cond: (country_id = 266)
+ Index Cond: (country_id = 1)
  Planning time: 0.122 ms
  Execution time: 0.149 ms
 
