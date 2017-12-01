@@ -9,13 +9,15 @@ CREATE TABLE ab_relations (
     guitar_player_id integer NOT NULL,
     brand_id integer NOT NULL,
     id serial);
+    
+    ALTER TABLE ab_relations OWNER TO postgres;
 
 CREATE TABLE ag_relations (
     guitar_player_id integer NOT NULL,
     genre_id integer NOT NULL,
     id serial);
 
-ALTER TABLE ag_relations OWNER TO kirill;
+ALTER TABLE ag_relations OWNER TO postgres;
 
 CREATE TABLE bands (
     band_name character varying(256) NOT NULL,
@@ -25,9 +27,11 @@ CREATE TABLE bands (
     id serial);
 
 ALTER TABLE bands OWNER TO postgres;
+
 CREATE TABLE countries (
     country_name character varying(256) NOT NULL,
     id serial);
+    ALTER TABLE countries OWNER TO postgres;
 
 CREATE TABLE genres (
     genre_name character varying(256) NOT NULL,
@@ -36,15 +40,21 @@ CREATE TABLE genres (
     brightest_band_id integer NOT NULL,
     id serial,
     CONSTRAINT genre_year_of_occurrence_check CHECK ((year_of_occurrence > 1850)));
+    
+    ALTER TABLE genres OWNER TO postgres;
 
 CREATE TABLE gp_band_relations (
     band_id integer NOT NULL,
     guitar_player_id integer NOT NULL,
     id serial);
+    
+    ALTER TABLE gp_band_relations OWNER TO postgres;
 
 CREATE TABLE guitar_brands (
     brand_name character varying(256) NOT NULL,
     id serial);
+    
+    ALTER TABLE guitar_brands OWNER TO postgres;
 
 CREATE TABLE guitar_players (
     first_name character varying(256) NOT NULL,
@@ -55,10 +65,14 @@ CREATE TABLE guitar_players (
     label_id integer NOT NULL,
     id serial,
     CONSTRAINT birth_death_date CHECK ((birth_date < death_date)));
+    
+    ALTER TABLE guitar_players OWNER TO postgres;
 
 CREATE TABLE labels (
     label_name character varying(256) NOT NULL,
     id serial);
+    
+    ALTER TABLE labels OWNER TO postgres;
 
 INSERT INTO ab_relations (guitar_player_id, brand_id) VALUES
 (15,	1	),
