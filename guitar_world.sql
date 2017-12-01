@@ -2,6 +2,11 @@
 -- PostgreSQL database dump
 --
 
+DROP DATABASE IF EXISTS guitar_world;
+CREATE DATABASE guitar_world;
+GRANT ALL PRIVILEGES ON DATABASE guitar_world TO postgres;
+\c guitar_world
+
 -- Dumped from database version 9.6.5
 -- Dumped by pg_dump version 9.6.5
 
